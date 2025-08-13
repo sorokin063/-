@@ -1,0 +1,9 @@
+aiogram==3.15.0
+aiosqlite==0.20.0
+loguru==0.7.3
+pydantic-settings==2.7.0
+pydantic == 2.9.2
+SQLAlchemy==2.0.37
+alembic==1.14.0
+pandas
+openpyxl
