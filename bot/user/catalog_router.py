@@ -7,7 +7,7 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.dao.dao import CategoryDao, ProductDao, SubcategoryDao
-from bot.user.kbs import catalog_kb, product_kb, subcatalog_kb, choose_size_kb2, delivery_kb, delivery_kb2
+from bot.user.kbs import catalog_kb, product_kb, subcatalog_kb, choose_size_kb2, delivery_kb2
 from bot.user.purchase_standart import purchase_standart_router
 from bot.user.purchase_ucassa import purchase_ucassa_router
 from bot.user.schemas import ProductCategoryIDModel, SubcategoryIDModel

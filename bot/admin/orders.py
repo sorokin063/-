@@ -50,18 +50,34 @@ async def order_status_process_name(message:Message, state: FSMContext, session_
                 'Confirmed': order.confirmed
                 }
 
+            payment_info = (
+                f"user_id: <b>{int(order.user_id)}</b>,\n"
+                f"username: <b>@{order.user_name},</b>\n"
+                f"FIO: <b>{order.fio}</b>,\n"
+                # f"'payment_id': <b>{payment_info.telegram_payment_charge_id}</b>,\n"
+                f"'price': <b>{order.price}</b>,\n"
+                f"'product_id': <b>{int(order.product_id)}</b>,\n"
+                f"product_name: <b>{order.product_name}</b>,\n"
+                f"'size': <b>{order.product_size}</b>,\n"
+                f"'delivery': <b>{order.delivery_methotd}</b>,\n"
+                f"'phone_number': <b>{order.phone_number}</b>,\n"
+                # f"'full_name': <b>{payment_info.order_info.name}</b>,\n"
+                # f"'ucassa_charge_id': <b>{message.successful_payment.provider_payment_charge_id}</b>\n"
+                f"Confirmed: {order.confirmed}"
+            )
+
             try:
 
                 if order.confirmed:
                     await message.answer_photo(
                     photo=order.photo_confirm,
-                    caption=f"{payment_data}",
+                    caption=f"{payment_info}",
                     reply_markup=order_confirmed_management_kb(order_id=order.id)
                 )
                 else:
                     await message.answer_photo(
                         photo=order.photo_confirm,
-                        caption=f"{payment_data}",
+                        caption=f"{payment_info}",
                         reply_markup=order_management_kb(order_id=order.id)
                     )
             except Exception as e:
@@ -70,10 +86,16 @@ async def order_status_process_name(message:Message, state: FSMContext, session_
                     session=session_without_commit,
                     data_id=int(order.product_id)
                 )
-                await message.answer(
-                    text=f"{payment_data}",
-                    reply_markup=order_confirmed_management_kb(order_id = order.id)
-                )
+                if order.confirmed:
+                    await message.answer(
+                        text=f"{payment_info}",
+                        reply_markup=order_confirmed_management_kb(order_id = order.id)
+                    )
+                else:
+                    await message.answer(
+                        text=f"{payment_info}",
+                        reply_markup=order_management_kb(order_id=order.id)
+                    )
             
     else:
         await message.answer(

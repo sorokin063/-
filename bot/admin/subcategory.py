@@ -73,6 +73,7 @@ async def admin_process_subcategory_category(call: CallbackQuery, state: FSMCont
     message = call.message
     category_id = int(call.data.split("_")[-1])
     await state.update_data(category_id=category_id)
+    await process_dell_text_msg(message, state)
     logger.debug(f"state: {state}\n message category_id: {category_id}")
 
     product_data = await state.get_data()

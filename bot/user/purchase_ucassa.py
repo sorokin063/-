@@ -54,6 +54,18 @@ async def pre_checkout_query(pre_checkout_q: PreCheckoutQuery):
 async def successful_payment(message: Message, session_with_commit: AsyncSession):
     payment_info = message.successful_payment
     user_id, product_id, size, delivery_methotd = payment_info.invoice_payload.split('_')
+
+    admin_payment_info = (
+        f"user_id: <b>{int(user_id)}</b>,\n"
+        f"'payment_id': <b>{payment_info.telegram_payment_charge_id}</b>,\n"
+        f"'price': <b>{payment_info.total_amount / 100}</b>,\n"
+        f"'product_id': <b>{int(product_id)}</b>,\n"
+        f"'size': <b>{size}</b>,\n"
+        f"'delivery': <b>{delivery_methotd}</b>,\n"
+        f"'phone_number': <b>{payment_info.order_info.phone_number}</b>,\n"
+        f"'full_name': <b>{payment_info.order_info.name}</b>,\n"
+        f"'ucassa_charge_id': <b>{message.successful_payment.provider_payment_charge_id}</b>\n"
+    )
     payment_data = {
         'user_id': int(user_id),
         'payment_id': payment_info.telegram_payment_charge_id,
@@ -95,7 +107,7 @@ async def successful_payment(message: Message, session_with_commit: AsyncSession
     for admin_id in settings.ADMIN_IDS:
         try:
             username = message.from_user.username
-            user_info = f"@{username} ({message.from_user.id})" if username else f"c ID {message.from_user.id}"
+            user_info = f"@{username} ({message.from_user.id})" if username else f" {payment_info.order_info.name} c ID {message.from_user.id}"
             await bot.send_media_group(
                 chat_id=admin_id,
                 media=media_group,
@@ -104,8 +116,9 @@ async def successful_payment(message: Message, session_with_commit: AsyncSession
                 chat_id=admin_id,
                 text=(
                     f"💲 Пользователь {user_info} купил товар <b>{product_data.name}</b> (ID: {product_id}) "
-                    f"за <b>{product_data.price} ₽</b>."
-                    f"Payment data: {payment_data}"
+                    f"за <b>{product_data.price} ₽</b>.\n\n"
+                    # f"Payment data: {payment_data}\n"
+                    f"{admin_payment_info}"
                 )
             )
         except Exception as e:
@@ -129,7 +142,7 @@ async def successful_payment(message: Message, session_with_commit: AsyncSession
         f"🔹 <b>Цена:</b> <b>{product_data.price} ₽</b>\n"
         f"🔹 <b>Размер</b>\n<i>{size}</i>\n"
         f"━━━━━━━━━━━━━━━━━━\n"
-        f"В скором времени администрация свяжится с вами\n"
+        f"В скором времени администрация свяжется с вами\n"
     )
 
     # Отправляем информацию о товаре пользователю
