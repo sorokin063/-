@@ -174,3 +174,4 @@ cython_debug/
 bot/log.txt
 *.xlsx
 Admins.xlsx
+data/db.sqlite3

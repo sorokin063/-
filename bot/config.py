@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     PAYMENT_PROVIDER_TOKEN: str
     FORMAT_LOG: str = "{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}"
     LOG_ROTATION: str = "10 MB"
-    DB_URL: str = 'sqlite+aiosqlite:///data/db.sqlite3'
+    DB_URL: str = 'sqlite+aiosqlite:///../data/db.sqlite3'
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
     )
